@@ -7,3 +7,5 @@ class Config:
         'port': 27017,
         'db_name': 'dayz'
     }
+    port = 5000
+    secret_key = 'your-secret-key'
