@@ -1,4 +1,5 @@
 class Config:
+    username = False
     credentials = {
         'user': '',
         'password': '',

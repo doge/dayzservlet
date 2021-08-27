@@ -1,10 +1,15 @@
 from pymongo import MongoClient
+from config import Config
 
 
 class Database:
     def __init__(self, credentials, collection):
-        self.client = MongoClient('mongodb://%s:%s@%s:%s' % (credentials['user'], credentials['password'],
-                                                             credentials['ip'], credentials['port']))
+        if Config.username:
+            self.client = MongoClient('mongodb://%s:%s@%s:%s' % (credentials['user'], credentials['password'],
+                                                                 credentials['ip'], credentials['port']))
+        else:
+            self.client = MongoClient(credentials['ip'], credentials['port'])
+
         self.db = self.client[credentials['db_name']]
         self.collection = self.db[collection]
 

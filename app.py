@@ -22,7 +22,7 @@ def find():
         formatted_seconds = round(-moment_time.diff(moment.now(), 'seconds').total_seconds())
         player['queue'] = formatted_seconds
 
-        return jsonify(player)
+        return player
 
     return jsonify({'status': 'success'}), 200
 
