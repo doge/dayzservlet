@@ -8,7 +8,8 @@ database = Database(Config.credentials, 'players')
 
 
 def log(uid, message):
-    print("[%s] %s" % (uid, message))
+    datetime.now()
+    print("[%s] [%s] %s" % (f"{datetime.now():%Y-%m-%d %H:%M:%S}", uid, message))
 
 
 def create_app():
