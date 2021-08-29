@@ -26,10 +26,13 @@ def create_app():
         if player:
             player['_id'] = str(player['_id'])
 
-            # calculate queue seconds
-            moment_time = moment.date(player['queue'])
-            formatted_seconds = round(-moment_time.diff(moment.now(), 'seconds').total_seconds())
-            player['queue'] = formatted_seconds
+            try:
+                # calculate queue seconds
+                moment_time = moment.date(player['queue'])
+                formatted_seconds = round(-moment_time.diff(moment.now(), 'seconds').total_seconds())
+                player['queue'] = formatted_seconds
+            except KeyError:
+                log(uid, "[/lud0/find/] Queue time not found. Skipping...")
 
             log(uid, "[/lud0/find/] Found player!")
 
@@ -46,10 +49,13 @@ def create_app():
         if player:
             player['_id'] = str(player['_id'])
 
-            # calculate queue seconds
-            moment_time = moment.date(player['queue'])
-            formatted_seconds = round(-moment_time.diff(moment.now(), 'seconds').total_seconds())
-            player['queue'] = formatted_seconds
+            try:
+                # calculate queue seconds
+                moment_time = moment.date(player['queue'])
+                formatted_seconds = round(-moment_time.diff(moment.now(), 'seconds').total_seconds())
+                player['queue'] = formatted_seconds
+            except KeyError:
+                log(uid, "[/lud0/find/] Queue time not found. Skipping...")
 
             log(uid, "[/lud0/load/] Loaded player.")
 
