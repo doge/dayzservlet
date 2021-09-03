@@ -32,6 +32,7 @@ def create_app():
                 formatted_seconds = round(-moment_time.diff(moment.now(), 'seconds').total_seconds())
                 player['queue'] = formatted_seconds
             except KeyError:
+                player['queue'] = 0
                 log(uid, "[/lud0/find/] Queue time not found. Skipping...")
 
             log(uid, "[/lud0/find/] Found player!")
@@ -55,6 +56,7 @@ def create_app():
                 formatted_seconds = round(-moment_time.diff(moment.now(), 'seconds').total_seconds())
                 player['queue'] = formatted_seconds
             except KeyError:
+                player['queue'] = 0
                 log(uid, "[/lud0/find/] Queue time not found. Skipping...")
 
             log(uid, "[/lud0/load/] Loaded player.")
