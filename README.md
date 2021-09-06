@@ -23,3 +23,7 @@ Then, run these commands;
 `pip install -r requirements.txt`
 
 `python server.py`
+
+Then, in your `init.sqf` file in your mission, add this line at the bottom;
+
+`dbSelectHost "http://localhost:5000/DayZServlet/";`
