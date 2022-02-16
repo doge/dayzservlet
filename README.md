@@ -1,3 +1,5 @@
+### This repository is unmaintained as of Feburary 16, 2022.
+
 # DayZServlet
 A python-flask implementation of the servlet used for the legacy versions of DayZ.
 
