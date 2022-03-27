@@ -8,7 +8,7 @@ def add():
     item = request.json
 
     Interfaces.world.insert(item)
-    log("/world/remove/", f"[{item['type']}] added to world.")
+    log("/world/add/", f"[{item['type']}] added to world.")
 
     return jsonify({'status': 'success'}), 200
 
