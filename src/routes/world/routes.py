@@ -17,7 +17,7 @@ def remove():
     item = request.json
 
     Interfaces.world.delete(item)
-    log("/world/remove/", f" [{item['type']}] removed from world.")
+    log("/world/remove/", f"[{item['type']}] removed from world.")
 
     return jsonify({'status': 'success'}), 200
 
