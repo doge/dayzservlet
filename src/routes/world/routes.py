@@ -40,4 +40,4 @@ def get():
 
     log("/world/get/", f"[{item_id}] [{item['type']}] served object.")
 
-    return items[item_id]
+    return item
