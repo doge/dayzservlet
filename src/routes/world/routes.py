@@ -21,9 +21,23 @@ def remove():
 
     return jsonify({'status': 'success'}), 200
 
-@world.route("/DayZServlet/world/count/", methods=["POST"])
+@world.route("/DayZServlet/world/count/", methods=["POST", "GET"])
 def count():
     items = Interfaces.world.find()
-    log("/world/count/", "Count requested.")
+
+    log("/world/count/", "served count.")
 
     return jsonify({'count': len(items)}), 200
+
+@world.route("/DayZServlet/world/get/", methods=["POST", "GET"])
+def get():
+    item_id = request.json['item']
+
+    items = Interfaces.world.find()
+    
+    item = items[item_id]
+    del item['_id'];
+
+    log("/world/get/", f"[{item_id}] [{item['type']}] served object.")
+
+    return items[item_id]

@@ -14,6 +14,7 @@ Older versions of DayZ Standalone make post/get requests to certain endpoints th
 | /DayZServlet/lud0/save    |
 | /DayZServlet/lud0/queue   |
 | /DayZServlet/lud0/kill    |
+| /DayZServlet/world/get    |
 | /DayZServlet/world/add    |
 | /DayZServlet/world/remove |
 | /DayZServlet/world/count  |
