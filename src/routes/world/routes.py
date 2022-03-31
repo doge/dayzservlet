@@ -16,8 +16,12 @@ def add():
 def remove():
     item = request.json
 
-    Interfaces.world.delete(item)
-    log("/world/remove/", f"[{item['type']}] removed from world.")
+    query = Interfaces.world.delete(item)
+    if query.deleted_count:
+        log("/world/remove/", f"[{item['type']}] removed from world.")
+    else:
+        # log("/world/remove/", f"[{item['type']}] does not exist in world.")
+        pass
 
     return jsonify({'status': 'success'}), 200
 
@@ -36,8 +40,8 @@ def get():
     items = Interfaces.world.find()
     
     item = items[item_id]
-    del item['_id'];
 
     log("/world/get/", f"[{item_id}] [{item['type']}] served object.")
-
+    
+    del item['_id'];
     return item

@@ -11,8 +11,6 @@ def find():
     player = Interfaces.database.find_one({'uid': uid})
 
     if player:
-        player['_id'] = str(player['_id'])
-
         try:
             # calculate queue seconds
             moment_time = moment.date(player['queue'])
@@ -24,6 +22,7 @@ def find():
 
         log("/lud0/find/", f"[{uid}] Found player!")
 
+        del player['_id']
         return jsonify(player)
 
     log("/lud0/find/", f"[{uid}] Player not found.")
@@ -35,8 +34,6 @@ def load():
     player = Interfaces.database.find_one({'uid': uid})
 
     if player:
-        player['_id'] = str(player['_id'])
-
         try:
             # calculate queue seconds
             moment_time = moment.date(player['queue'])
@@ -48,6 +45,7 @@ def load():
 
         log("/lud0/load/", f"[{uid}] Loaded player.")
 
+        del player['_id']
         return jsonify(player)
 
     log("/lud0/load/", f"[{uid}] Couldn't load player!")
