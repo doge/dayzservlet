@@ -9,5 +9,3 @@ class Config:
 
     host = 'localhost'
     port = 5000
-
-    secret_key = 'your-secret-key'
