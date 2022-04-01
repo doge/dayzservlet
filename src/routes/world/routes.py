@@ -43,5 +43,5 @@ def get():
 
     log("/world/get/", f"[{item_id}] [{item['type']}] served object.")
     
-    del item['_id'];
+    del item['_id']
     return item
