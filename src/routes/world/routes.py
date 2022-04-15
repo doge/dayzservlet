@@ -12,6 +12,16 @@ def add():
 
     return jsonify({'status': 'success'}), 200
 
+@world.route("/DayZServlet/world/save_obj/", methods=["POST"])
+def save_obj():
+    uid = request.args.get('objuid', None, str)
+    Interfaces.database.update({'objuid': uid}, {
+        '$set': request.json
+    })
+
+    log("/world/save_obj", f"[{objuid}] Saved object.")
+    return jsonify({'status': 'success'}), 200
+
 @world.route("/DayZServlet/world/remove/", methods=["POST"])
 def remove():
     item = request.json
