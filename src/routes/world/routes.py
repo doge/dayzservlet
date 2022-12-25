@@ -14,8 +14,8 @@ def add():
 
 @world.route("/DayZServlet/world/save_obj/", methods=["POST"])
 def save_obj():
-    uid = request.args.get('oid', None, str)
-    Interfaces.database.update({'oid': uid}, {
+    oid = request.args.get('oid', None, str)
+    Interfaces.database.update({'oid': oid}, {
         '$set': request.json
     })
 
