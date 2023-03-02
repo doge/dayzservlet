@@ -18,6 +18,7 @@ def save_obj():
     if not oid:
         log("OID incorrect")
         return jsonify({'status': 'error', 'message': 'Missing object ID'}), 400
+    
     data = request.json
     items = data.get('items', [])
     item_data = {
@@ -30,11 +31,19 @@ def save_obj():
         "oid": oid,
         "item_data": item_data
     }
-
-    Interfaces.world.insert(document)
+    
+    # Check if document with given oid exists in the database
+    existing_doc = Interfaces.world.find_one({'oid': oid})
+    if existing_doc:
+        # Update the existing document with the new data
+        Interfaces.world.update_one({'oid': oid}, {'$set': {'item_data': item_data}})
+    else:
+        # Create a new document with the given oid and data
+        Interfaces.world.insert_one(document)
 
     log("/world/save_obj", f"[{oid}] Saved object.")
     return jsonify({'status': 'success'}), 200
+
 
 
 @world.route("/DayZServlet/world/load_obj/", methods=["POST", "GET"])
