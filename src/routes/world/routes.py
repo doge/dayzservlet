@@ -15,12 +15,27 @@ def add():
 @world.route("/DayZServlet/world/save_obj/", methods=["POST"])
 def save_obj():
     oid = request.args.get('oid', None, str)
+    if not oid:
+        return jsonify({'status': 'error', 'message': 'Missing object ID'}), 400
+    data = request.json
+    if not data:
+        return jsonify({'status': 'error', 'message': 'Missing data'}), 400
+    items = data.get('items', [])
+    if not items:
+        return jsonify({'status': 'error', 'message': 'No items to save'}), 400
+    item_data = {
+        'model': data.get('model', ''),
+        'items': items,
+        'state': data.get('state', {})
+    }
     Interfaces.database.update({'oid': oid}, {
-        '$set': request.json
-    })
+        '$set': item_data
+        }
+    )
 
     log("/world/save_obj", f"[{oid}] Saved object.")
     return jsonify({'status': 'success'}), 200
+
 
 @world.route("/DayZServlet/world/remove/", methods=["POST"])
 def remove():
