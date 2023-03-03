@@ -3,6 +3,7 @@ from .utils import log
 
 from .routes.lud0.routes import lud0
 from .routes.world.routes import world
+from .routes.objects.routes import objects
 
 def create_app():
     app = Flask(__name__)
@@ -12,5 +13,6 @@ def create_app():
 
     app.register_blueprint(lud0)
     app.register_blueprint(world)
+    app.register_blueprint(objects)
 
     return app

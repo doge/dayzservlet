@@ -9,3 +9,4 @@ def log(uid, message):
 class Interfaces:
     database = Database(Config.mongo_credentials, 'players')
     world = Database(Config.mongo_credentials, 'world')
+    objects = Database(Config.mongo_credentials, 'objects')

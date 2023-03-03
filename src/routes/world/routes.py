@@ -12,50 +12,6 @@ def add():
 
     return jsonify({'status': 'success'}), 200
 
-@world.route("/DayZServlet/world/save_obj/", methods=["POST"])
-def save_obj():
-    oid = request.args.get('oid', None, str)
-    if not oid:
-        log("OID incorrect")
-        return jsonify({'status': 'error', 'message': 'Missing object ID'}), 400
-    
-    data = request.json
-    items = data.get('items', [])
-    item_data = {
-        'model': data.get('model', ''),
-        'items': items,
-        'state': data.get('state', {})
-    }
-
-    document = {
-        "oid": oid,
-        "item_data": item_data
-    }
-    
-    # Check if document with given oid exists in the database
-    existing_doc = Interfaces.world.find_one({'oid': oid})
-    if existing_doc:
-        # Update the existing document with the new data
-        Interfaces.world.update_one({'oid': oid}, {'$set': {'item_data': item_data}})
-    else:
-        # Create a new document with the given oid and data
-        Interfaces.world.insert_one(document)
-
-    log("/world/save_obj", f"[{oid}] Saved object.")
-    return jsonify({'status': 'success'}), 200
-
-
-
-@world.route("/DayZServlet/world/load_obj/", methods=["POST", "GET"])
-def load_obj():
-    oid = request.args.get('oid', None, str)
-    oids = Interfaces.world.find()
-    obj = oids[oid]
-    log("/world/load_obj/", f"[{obj}] [{oid['type']}] served object.")
-    return obj
-
-
-
 @world.route("/DayZServlet/world/remove/", methods=["POST"])
 def remove():
     item = request.json
