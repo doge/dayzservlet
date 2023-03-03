@@ -27,10 +27,10 @@ def save_obj():
     existing_doc = Interfaces.objects.find_one({'oid': oid})
     if existing_doc:
         # Update the existing document with the new data
-        Interfaces.objects.update_one({'oid': oid}, {'$set': {'item_data': item_data}})
+        Interfaces.objects.update({'oid': oid}, {'$set': {'item_data': item_data}})
     else:
         # Create a new document with the given oid and data
-        Interfaces.objects.insert_one(document)
+        Interfaces.objects.insert(document)
 
     log("/objects/save_obj", f"[{oid}] Saved object.")
     return jsonify({'status': 'success'}), 200
