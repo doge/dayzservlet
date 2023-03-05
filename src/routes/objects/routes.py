@@ -38,10 +38,21 @@ def save_obj():
 @objects.route("/DayZServlet/objects/load_obj/", methods=["POST", "GET"])
 def load_obj():
     oid = request.args.get('oid', None, str)
-    oids = Interfaces.objects.find()
-    obj = oids[oid]
+    obj = collection.find_one({'uid': oid})
+    if obj is None:
+        return ""
+    
+    res_arr = {}
+    res_arr['model'] = obj['model']
+    res_arr['servid'] = obj['servid']
+    res_arr['items'] = obj['items']
+    res_arr['state'] = obj['state']
+    res_arr['pos'] = [round(obj['x'], 3), round(obj['y'], 3), round(obj['z'], 3)]
+    res_arr['dir'] = [round(obj['dir_x'], 3), round(obj['dir_y'], 3), round(obj['dir_z'], 3)]
+    res_arr['up'] = [round(obj['up_0'], 3), round(obj['up_1'], 3), round(obj['up_2'], 3)]
+    
     log("/objects/load_obj/", f"[{obj}] [{oid['type']}] served object.")
-    return obj
+    return jsonify(res_arr)
 
 @objects.route("/DayZServlet/objects/kill_obj/", methods=["POST"])
 def kill_obj():
