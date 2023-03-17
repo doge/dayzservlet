@@ -38,21 +38,26 @@ def save_obj():
 @objects.route("/DayZServlet/objects/load_obj/", methods=["POST", "GET"])
 def load_obj():
     oid = request.args.get('oid', None, str)
-    obj = collection.find_one({'uid': oid})
+    if not oid:
+        return jsonify({'status': 'error', 'message': 'Missing object ID'}), 400
+
+    obj = Interfaces.objects.find_one({'oid': oid})
+
     if obj is None:
-        return ""
-    
-    res_arr = {}
-    res_arr['model'] = obj['model']
-    res_arr['servid'] = obj['servid']
-    res_arr['items'] = obj['items']
-    res_arr['state'] = obj['state']
-    res_arr['pos'] = [round(obj['x'], 3), round(obj['y'], 3), round(obj['z'], 3)]
-    res_arr['dir'] = [round(obj['dir_x'], 3), round(obj['dir_y'], 3), round(obj['dir_z'], 3)]
-    res_arr['up'] = [round(obj['up_0'], 3), round(obj['up_1'], 3), round(obj['up_2'], 3)]
-    
-    log("/objects/load_obj/", f"[{obj}] [{oid['type']}] served object.")
-    return jsonify(res_arr)
+        return jsonify({'status': 'error', 'message': 'Object not found'}), 404
+
+    item_data = obj['item_data']
+
+    response_data = {
+        'model': item_data['model'],
+        'items': item_data['items'],
+        'state': item_data['state'],
+        'basepos': obj['basepos'],
+        'ownerid': obj['ownerid'],
+    }
+
+    log("/objects/load_obj/", f"[{obj}] [{oid}] served object.")
+    return jsonify(response_data)
 
 @objects.route("/DayZServlet/objects/kill_obj/", methods=["POST"])
 def kill_obj():
