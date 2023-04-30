@@ -51,31 +51,41 @@ def load_obj():
     response_data = {
         'model': item_data['model'],
         'items': item_data['items'],
-        'state': item_data['state'],
-        'basepos': obj['basepos'],
-        'ownerid': obj['ownerid'],
+        'state': item_data['state']
     }
 
     log("/objects/load_obj/", f"[{obj}] [{oid}] served object.")
     return jsonify(response_data)
 
-@objects.route("/DayZServlet/objects/kill_obj/", methods=["POST"])
+@objects.route("/DayZServlet/objects/kill_obj/", methods=["POST", "GET"])
 def kill_obj():
-    item = request.json
+    oid = request.args.get('obj', None, str)
+    if not oid:
+        return jsonify({'status': 'error', 'message': 'Missing object ID'}), 400
 
-    query = Interfaces.objects.delete(item)
+    obj = Interfaces.objects.find_one({'oid': oid})
+
+    if obj is None:
+        return jsonify({'status': 'error', 'message': 'Object not found'}), 404
+
+    query = Interfaces.objects.delete({'oid': oid})
     if query.deleted_count:
-        log("/objects/remove/", f"[{item['type']}] removed from world.")
+        log("/objects/remove/", f"[{oid}] removed from world.")
     else:
         # log("/world/remove/", f"[{item['type']}] does not exist in world.")
         pass
 
     return jsonify({'status': 'success'}), 200
 
-@objects.route("/DayZServlet/objects/count_obj/", methods=["POST", "GET"])
-def count_obj():
-    items = Interfaces.objects.find()
 
-    log("/objects/count_obj/", "served count.")
+@objects.route("/DayZServlet/objects/count/", methods=["GET"])
+def count_objects():
+    objects = Interfaces.objects.find({}, {"oid": 0})
+    count = objects.count(True)
+    ids = [obj["oid"] for obj in objects]
 
-    return jsonify({'count': len(items)}), 200
+    response_data = {
+        "ids": ids
+    }
+
+    return jsonify(response_data)
