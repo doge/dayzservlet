@@ -5,31 +5,6 @@ objects = Blueprint("objects", __name__)
 
 @objects.route("/DayZServlet/objects/save_obj/", methods=["POST"])
 def save_obj():
-    try:
-        data = request.get_json()  # Get the JSON data from the request
-
-        # Assuming the 'oid' parameter is part of the URL
-        oid = request.args.get("oid")
-
-        # Extract the model and state data from the incoming JSON
-        model = data.get("model")
-        state = data.get("state")
-
-        # # Assuming 'items' array is present in the incoming JSON
-        # items = data.get("items", [])
-
-        # Log the received data for debugging purposes
-        log("/objects/save_obj", f"[{oid}] Received object with model: {model}")
-        log("/objects/save_obj", f"[{oid}] Received object with state: {state}")
-
-        # Return a success response
-        return jsonify({'status': 'success'}), 200
-    except Exception as e:
-        # In case of an error, return an error response
-        return jsonify({'status': 'error', 'message': str(e)}), 500
-    
-@objects.route("/DayZServlet/objects/save_obj2/", methods=["POST"])
-def save_obj2():
     oid = request.args.get('oid', None, str)
     if not oid:
         log("OID incorrect")
@@ -37,29 +12,28 @@ def save_obj2():
     
     data = request.json
     items = data.get('items', [])
-    item_data = {
-        'model': data.get('model', ''),
-        'items': items,
-        'state': data.get('state', {})
-    }
+    state = data.get('state', [])
+    model = data.get('model', [])
 
     document = {
         "oid": oid,
-        "item_data": item_data
+        "items": items,
+        "state": state,
+        "model": model,
     }
     
     # Check if document with given oid exists in the database
     existing_doc = Interfaces.objects.find_one({'oid': oid})
     if existing_doc:
         # Update the existing document with the new data
-        Interfaces.objects.update({'oid': oid}, {'$set': {'item_data': item_data}})
+        Interfaces.objects.update({'oid': oid}, {'$set': {'state': state}})
     else:
         # Create a new document with the given oid and data
         Interfaces.objects.insert(document)
 
     log("/objects/save_obj", f"[{oid}] Saved object.")
     return jsonify({'status': 'success'}), 200
-
+    
 @objects.route("/DayZServlet/objects/load_obj/", methods=["POST", "GET"])
 def load_obj():
     oid = request.args.get('oid', None, str)
@@ -71,12 +45,11 @@ def load_obj():
     if obj is None:
         return jsonify({'status': 'error', 'message': 'Object not found'}), 404
 
-    item_data = obj['item_data']
 
     response_data = {
-        'model': item_data['model'],
-        'items': item_data['items'],
-        'state': item_data['state']
+        'model': obj['model'],
+        'items': obj['items'],
+        'state': obj['state']
     }
 
     log("/objects/load_obj/", f"[{obj}] [{oid}] served object.")
