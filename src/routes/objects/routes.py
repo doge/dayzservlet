@@ -27,6 +27,38 @@ def save_obj():
     except Exception as e:
         # In case of an error, return an error response
         return jsonify({'status': 'error', 'message': str(e)}), 500
+    
+@objects.route("/DayZServlet/objects/save_obj2/", methods=["POST"])
+def save_obj2():
+    oid = request.args.get('oid', None, str)
+    if not oid:
+        log("OID incorrect")
+        return jsonify({'status': 'error', 'message': 'Missing object ID'}), 400
+    
+    data = request.json
+    items = data.get('items', [])
+    item_data = {
+        'model': data.get('model', ''),
+        'items': items,
+        'state': data.get('state', {})
+    }
+
+    document = {
+        "oid": oid,
+        "item_data": item_data
+    }
+    
+    # Check if document with given oid exists in the database
+    existing_doc = Interfaces.objects.find_one({'oid': oid})
+    if existing_doc:
+        # Update the existing document with the new data
+        Interfaces.objects.update({'oid': oid}, {'$set': {'item_data': item_data}})
+    else:
+        # Create a new document with the given oid and data
+        Interfaces.objects.insert(document)
+
+    log("/objects/save_obj", f"[{oid}] Saved object.")
+    return jsonify({'status': 'success'}), 200
 
 @objects.route("/DayZServlet/objects/load_obj/", methods=["POST", "GET"])
 def load_obj():
