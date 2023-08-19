@@ -5,35 +5,28 @@ objects = Blueprint("objects", __name__)
 
 @objects.route("/DayZServlet/objects/save_obj/", methods=["POST"])
 def save_obj():
-    oid = request.args.get('oid', None, str)
-    if not oid:
-        log("OID incorrect")
-        return jsonify({'status': 'error', 'message': 'Missing object ID'}), 400
-    
-    data = request.json
-    items = data.get('items', [])
-    item_data = {
-        'model': data.get('model', ''),
-        'items': items,
-        'state': data.get('state', {})
-    }
+    try:
+        data = request.get_json()  # Get the JSON data from the request
 
-    document = {
-        "oid": oid,
-        "item_data": item_data
-    }
-    
-    # Check if document with given oid exists in the database
-    existing_doc = Interfaces.objects.find_one({'oid': oid})
-    if existing_doc:
-        # Update the existing document with the new data
-        Interfaces.objects.update({'oid': oid}, {'$set': {'item_data': item_data}})
-    else:
-        # Create a new document with the given oid and data
-        Interfaces.objects.insert(document)
+        # Assuming the 'oid' parameter is part of the URL
+        oid = request.args.get("oid")
 
-    log("/objects/save_obj", f"[{oid}] Saved object.")
-    return jsonify({'status': 'success'}), 200
+        # Extract the model and state data from the incoming JSON
+        model = data.get("model")
+        state = data.get("state")
+
+        # # Assuming 'items' array is present in the incoming JSON
+        # items = data.get("items", [])
+
+        # Log the received data for debugging purposes
+        log("/objects/save_obj", f"[{oid}] Received object with model: {model}")
+        log("/objects/save_obj", f"[{oid}] Received object with state: {state}")
+
+        # Return a success response
+        return jsonify({'status': 'success'}), 200
+    except Exception as e:
+        # In case of an error, return an error response
+        return jsonify({'status': 'error', 'message': str(e)}), 500
 
 @objects.route("/DayZServlet/objects/load_obj/", methods=["POST", "GET"])
 def load_obj():
