@@ -103,14 +103,19 @@ def kill_obj():
     return jsonify({'status': 'success'}), 200
 
 
-@objects.route("/DayZServlet/objects/count/", methods=["GET"])
-def count_objects():
-    objects = Interfaces.objects.find({}, {"oid": 0})
-    count = objects.count(True)
-    ids = [obj["oid"] for obj in objects]
+@objects.route("/DayZServlet/objects/count_obj/", methods=["GET"])
+def count_obj():
+        # Fetch all documents from the database
+        all_documents = Interfaces.objects.find()
 
-    response_data = {
-        "ids": ids
-    }
+        # Initialize a list to store the OIDs
+        oids = []
 
-    return jsonify(response_data)
+        # Collect OIDs from the documents
+        for doc in all_documents:
+            oid = doc.get("oid")
+            if oid:
+                oids.append(oid)
+
+        # Return the list of OIDs as a JSON array
+        return jsonify({'count': oids}), 200
